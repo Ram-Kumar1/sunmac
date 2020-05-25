@@ -1,0 +1,37 @@
+<?php
+session_start();
+include 'db_connect.php';
+
+if(isset($_POST['quotationId']))  {
+$ct = 0;
+$sql = "SELECT CUSTOMER_NAME, REFERENCE_NO FROM quotation WHERE QUOTATION_ID=$_POST['quotationId']";
+$result = mysqli_query($conn,$sql);
+while($row = mysqli_fetch_array($result)){
+ 		$S_NAME = $row['CUSTOMER_NAME'];
+ 		$REFERENCE_NO = $row['REFERENCE_NO'];
+ }
+$sql = "SELECT count(S_NAME) as ct FROM sales_customer WHERE S_NAME='$S_NAME'";
+$result = mysqli_query($conn,$sql);
+while($row = mysqli_fetch_array($result)){
+ 		$ct = $row['ct'];
+ 		$S_ID = $row['S_ID'];
+		
+		date_default_timezone_set('Asia/Kolkata');
+		$date_1 =  date('d-m-Y H:i');
+		$date = date('Y-m-d', strtotime($date_1));
+		
+}
+if($ct > 0){
+		$sql = "DELETE FROM quotation WHERE QUOTATION_ID=$_POST['quotationId']";
+		mysqli_query($conn,$sql);
+		$sql = "DELETE FROM sample_pi WHERE REFERENCE_NO='REFERENCE_NO'";
+		mysqli_query($conn,$sql);
+		$sql = "INSERT INTO `quotation_followup`(`CUSTOMER_ID`, `Q_STATUS`, `Q_DATE`, `SHOW_TO_ADMIN`) VALUES ($S_ID,0,$date,1,)";
+		mysqli_query($conn,$sql);
+
+}
+
+
+}
+
+?>
